@@ -13,15 +13,12 @@ end
 # │   │   ├── sidebar.rb
 # │   │   └── footer.rb
 # │   └── seed_superuser.rb
+# ├── README.md
+# ├── .gitignore
 
-# template.rb
 say "🛠 Setting up Rails app with Devise, Rolify, AdminLTE...", :green
 
 # Add main gems
-gem 'devise'
-gem 'devise_invitable'
-gem 'rolify'
-gem 'cancancan'
 gem 'stimulus-rails'
 gem 'jquery-rails'
 gem 'sassc-rails'
