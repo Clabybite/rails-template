@@ -69,5 +69,5 @@ after_bundle do
     # Git
   git :init
   git add: "."
-  git commit: "-m 'Initial Rails Project Setup'"
+  git commit: "-m 'Initial Rails template setup'"
 end
