@@ -1,3 +1,5 @@
+add_source_path File.expand_path(File.dirname(__FILE__))
+
 # rails-template/
 # ├── template.rb               # main entry point
 # ├── templates/
