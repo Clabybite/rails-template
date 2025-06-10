@@ -1,3 +1,4 @@
+# encoding: utf-8
 after_bundle do
   say "⬇️ Installing AdminLTE layout...", :green
 
@@ -8,7 +9,10 @@ after_bundle do
 
   # Link assets
   append_to_file "app/assets/stylesheets/application.css", " *= require adminlte/adminlte.min\n"
-  append_to_file "app/assets/javascripts/application.js", "//= require adminlte/adminlte.min\n"
+  append_to_file "app/assets/config/manifest.js", <<~JS
+    //= link adminlte/adminlte.min.js
+  JS
+
 
   # Home controller and root route
   generate "controller", "home", "index", "--skip-assets", "--skip-helper"
