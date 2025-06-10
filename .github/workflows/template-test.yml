@@ -24,7 +24,7 @@ jobs:
 
       - name: Generate app from template
         run: |
-          rails new dummy_app -m template.rb -d sqlite3 --skip-test --force
+          CI=true rails new dummy_app -m template.rb -d sqlite3 --skip-test --force
           cd dummy_app
           bin/rails db:migrate
           bin/rails runner "puts '✅ Template applied successfully'"
