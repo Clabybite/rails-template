@@ -1,0 +1,30 @@
+name: Test Rails Template
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+
+      - name: Install Rails
+        run: gem install rails bundler
+
+      - name: Generate app from template
+        run: |
+          rails new dummy_app -m template.rb -d sqlite3 --skip-test --force
+          cd dummy_app
+          bin/rails db:migrate
+          bin/rails runner "puts '✅ Template applied successfully'"

@@ -1,0 +1,18 @@
+
+---
+
+### 📄 `.gitignore` (minimal starter)
+
+```gitignore
+/.bundle
+/log
+/tmp
+/.byebug_history
+/vendor/bundle
+*.swp
+*.bak
+*.log
+*.tmp
+.DS_Store
+.idea
+.vscode
