@@ -17,11 +17,6 @@ end
 # template.rb
 say "🛠 Setting up Rails app with Devise, Rolify, AdminLTE...", :green
 
-# Detect if running in CI
-ci_mode = ENV["CI"] == "true"
-
-@superuser_email = ci_mode ? "ci@example.com" : ask("📧 Superuser email [default: admin@example.com]:").presence || "admin@example.com"
-@superuser_password = ci_mode ? "password" : ask("🔐 Superuser password [default: password]:", echo: false).presence || "password"
 # Add main gems
 gem 'devise'
 gem 'devise_invitable'
