@@ -17,7 +17,7 @@ def prompt_or_default(message, default, echo: true)
 end
 # encoding: utf-8
 # Add this near the top of your template
-def completely_remove_kamal!
+def completely_remove_kamal!(ci_mode: false)
   say "➖ Completely removing Kamal", :yellow
   
   # 1. Remove from Gemfile
@@ -116,7 +116,7 @@ end
 
 
 # Call this early in your template (before after_bundle)
-completely_remove_kamal!
+completely_remove_kamal!(ci_mode: ci_mode)
 
 after_bundle do
   if system("bundle show kamal > /dev/null 2>&1")
