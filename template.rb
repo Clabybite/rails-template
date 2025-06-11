@@ -99,6 +99,8 @@ gem_group :development do
 end
 
 after_bundle do
+  run "bundle show kamal > kamal_origin.txt"
+  say "Kamal is brought in by: #{File.read('kamal_origin.txt')}", :red
 
   
 apply "templates/devise.rb"
