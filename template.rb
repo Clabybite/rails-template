@@ -27,30 +27,7 @@ end
 @db_user = prompt_or_default("🧑‍💻 DB username", "root")
 @db_pass = prompt_or_default("🔐 DB password (leave blank for none):","", echo: true)
 
-# Generate config/database.yml manually
-create_file "config/database.yml", <<~YML
-  default: &default
-    adapter: mysql2
-    encoding: utf8mb4
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    username: #{@db_user}
-    password: #{@db_pass}
-    host: localhost
-
-  development:
-    <<: *default
-    database: #{@app_name}_development
-
-  test:
-    <<: *default
-    database: #{@app_name}_test
-
-  production:
-    <<: *default
-    database: #{@app_name}_production
-    username: #{@db_user}
-    password: #{@db_pass}
-YML
+apply "templates/database.rb"
 
 # rails-template/
 # ├── template.rb               # main entry point
@@ -71,6 +48,8 @@ say "🛠 Setting up Rails app with Devise, Rolify, AdminLTE...", :green
 
 
 # Add main gems
+safe_gem 'importmap-rails'
+safe_gem 'turbo-rails'
 safe_gem 'stimulus-rails'
 gem 'jquery-rails'
 gem 'sassc-rails'
@@ -144,10 +123,12 @@ apply "templates/seed_superuser.rb"
   apply "templates/layout.rb"  # Loads AdminLTE layout with modular partials
 
 
-  # Git
-  git :init
-  git add: "."
-  git commit: "-m 'Initial Rails template setup'"
+  if !ci_mode
+    git :init
+    git add: "."
+    git commit: "-m 'Initial Rails template setup'"
+  end
+
 
   say "✅ Setup complete!", :green
 end

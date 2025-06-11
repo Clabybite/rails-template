@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true  # Ensures Rails runs in CI mode (skips prompts, etc.)
+      DB: sqlite3  # Use SQLite for simplicity in CI
 
     steps:
       - name: Checkout repo
@@ -29,16 +30,14 @@ jobs:
         run: |
           rails new dummy_app \
             -m template.rb \
-            -d mysql \
+            -d sqlite3 \
             --skip-test \
             --force \
-            --skip-javascript  # Skip JS if not needed (or add Node.js setup)
             --skip-binstubs
              --skip-kamal  # <-- ADD THIS LINE
           cat dummy_app/Gemfile.lock
           rails -v
           cd dummy_app
-          bin/rails db:create db:migrate
           bin/rails runner "puts '✅ Template applied successfully'"
 
       - name: Verify Turbo/Stimulus (if needed)
