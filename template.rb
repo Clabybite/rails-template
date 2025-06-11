@@ -98,6 +98,17 @@ gem_group :development do
   safe_gem 'web-console'
 end
 
+# Add this near the top of template.rb
+def reject_kamal!
+  say "➖ Explicitly removing Kamal", :yellow
+  gsub_file "Gemfile", /^gem ["']kamal["'].*$/, ""
+  remove_file "config/deploy.yml" if File.exist?("config/deploy.yml")
+  remove_dir ".kamal" if Dir.exist?(".kamal")
+end
+
+# Call this before after_bundle
+reject_kamal! if ci_mode || true # Always remove Kamal
+
 after_bundle do
   run "bundle show kamal > kamal_origin.txt"
   say "Kamal is brought in by: #{File.read('kamal_origin.txt')}", :red
