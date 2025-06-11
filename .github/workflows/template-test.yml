@@ -23,7 +23,7 @@ jobs:
           bundler-cache: true  # Caches gems for faster runs
 
       - name: Install Rails and dependencies
-        run: gem install rails bundler
+        run: gem install rails -v 7.1.5.1 bundler # <-- ADD -v 7.1.5.1 HERE
 
       - name: Generate app from template
         run: |
