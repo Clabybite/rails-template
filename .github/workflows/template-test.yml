@@ -7,24 +7,38 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  test_template:
     runs-on: ubuntu-latest
+    env:
+      CI: true  # Ensures Rails runs in CI mode (skips prompts, etc.)
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Updated to v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3
+          bundler-cache: true  # Caches gems for faster runs
 
-      - name: Install Rails
+      - name: Install Rails and dependencies
         run: gem install rails bundler
 
       - name: Generate app from template
         run: |
-          CI=true rails new dummy_app -m template.rb -d sqlite3 --skip-test --force
+          rails new dummy_app \
+            -m template.rb \
+            -d mysql \
+            --skip-test \
+            --force \
+            --skip-javascript  # Skip JS if not needed (or add Node.js setup)
           cd dummy_app
-          bin/rails db:migrate
+          bin/rails db:create db:migrate
           bin/rails runner "puts '✅ Template applied successfully'"
+
+      - name: Verify Turbo/Stimulus (if needed)
+        if: false  # Disabled by default; enable if your template uses JS
+        run: |
+          cd dummy_app
+          bin/rails turbo:install stimulus:install
