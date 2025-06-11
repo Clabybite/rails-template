@@ -15,22 +15,6 @@ def prompt_or_default(message, default, echo: true)
   say value ? "You entered: #{value}" : "Using default: #{default}", :green
   value || default
 end
-# encoding: utf-8
-# Add this near the top of your template
-def completely_remove_kamal!(ci_mode: false)
-  say "➖ Completely removing Kamal", :yellow
-  
-  # 1. Remove from Gemfile
-  gsub_file "Gemfile", /^gem ["']kamal["'].*$/, "" if File.exist?("Gemfile")
-  
-  # 2. Remove any existing Kamal files
-  remove_file "config/deploy.yml" if File.exist?("config/deploy.yml")
-  remove_dir ".kamal" if Dir.exist?(".kamal")
-  
-  # 3. Prevent binstub generation
-  run "mkdir -p bin && touch bin/kamal" if ci_mode # Create dummy file to prevent creation
-end
-
 
 # Prompt for app name
 @app_name = prompt_or_default("📦 What is your app name?", "my_app")
@@ -114,18 +98,8 @@ gem_group :development do
   safe_gem 'web-console'
 end
 
-
-# Call this early in your template (before after_bundle)
-completely_remove_kamal!(ci_mode: ci_mode)
-
 after_bundle do
-  if system("bundle show kamal > /dev/null 2>&1")
-    say "❌ Kamal is still present!", :red
-    run "bundle show kamal"
-    exit 1
-  else
-    say "✅ Kamal successfully removed", :green
-  end
+
   
 apply "templates/devise.rb"
 apply "templates/roles.rb"

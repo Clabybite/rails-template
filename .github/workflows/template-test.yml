@@ -27,11 +27,6 @@ jobs:
 
       - name: Generate app from template
         run: |
-          # Create a dummy kamal binstub to prevent generation
-          mkdir -p ~/bin
-          touch ~/bin/kamal
-          chmod +x ~/bin/kamal
-
           rails new dummy_app \
             -m template.rb \
             -d mysql \
@@ -39,6 +34,8 @@ jobs:
             --force \
             --skip-javascript  # Skip JS if not needed (or add Node.js setup)
             --skip-binstubs
+          cat dummy_app/Gemfile.lock
+          rails -v
           cd dummy_app
           bin/rails db:create db:migrate
           bin/rails runner "puts '✅ Template applied successfully'"
