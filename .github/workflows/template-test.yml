@@ -34,6 +34,7 @@ jobs:
             --force \
             --skip-javascript  # Skip JS if not needed (or add Node.js setup)
             --skip-binstubs
+             --skip-kamal  # <-- ADD THIS LINE
           cat dummy_app/Gemfile.lock
           rails -v
           cd dummy_app
