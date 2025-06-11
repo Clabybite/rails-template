@@ -1,6 +1,3 @@
-gem 'rolify'
-gem 'cancancan'
-
 after_bundle do
   # Remove existing rolify migration if present
   # Dir.glob("db/migrate/*rolify*.rb").each { |f| remove_file f }

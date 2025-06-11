@@ -84,6 +84,11 @@ gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'fugit'
 gem 'marcel'
+gem 'devise'
+gem 'devise_invitable'
+gem 'rolify'
+gem 'cancancan'
+
 
 gem_group :development, :test do
   gem 'factory_bot_rails'
