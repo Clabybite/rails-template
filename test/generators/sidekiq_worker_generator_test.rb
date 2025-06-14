@@ -8,6 +8,8 @@ class SidekiqWorkerGeneratorTest < Rails::Generators::TestCase
     def prepare_destination
         super  # Always call super to ensure cleanup happens
         File.write(File.join(destination_root, "Gemfile"), "")
+        FileUtils.mkdir_p(File.join(destination_root, "config"))
+  File.write(File.join(destination_root, "config/routes.rb"), "Rails.application.routes.draw do\nend\n")
     end
 
 
