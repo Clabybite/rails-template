@@ -1,6 +1,6 @@
 require "rails/generators"
 require_relative "../shared/helpers"
-class ScheduledJobGenerator < Rails::Generators::Base
+class CommonViewsGenerator < Rails::Generators::Base
     include GeneratorHelpers 
     source_root File.expand_path("templates", __dir__)
 
