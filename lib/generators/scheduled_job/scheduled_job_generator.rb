@@ -25,9 +25,10 @@ class ScheduledJobGenerator < Rails::Generators::Base
         "config/routes.rb",
         needle: /^end/,
         content: <<~RUBY,
-           if defined?(Sidekiq::Web) || Rails.env.development?
-                require "sidekiq/web"
-                mount Sidekiq::Web => "/sidekiq"
+           require 'sidekiq/web'
+            require 'sidekiq/cron/web'
+            authenticate :user, lambda { |u| u.as_admin? } do
+                mount Sidekiq::Web => '/sidekiq'
             end
         RUBY
         position: :before
