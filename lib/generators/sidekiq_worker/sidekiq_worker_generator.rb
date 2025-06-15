@@ -21,6 +21,7 @@ module SidekiqWorker
       safe_add_gem("sidekiq-cron")
 
       create_file "config/initializers/sidekiq.rb", <<~RUBY unless File.exist?("config/initializers/sidekiq.rb")
+        require "sidekiq"
         Sidekiq.configure_server do |config|
           config.redis = { url: ENV.fetch("REDIS_URL", "redis://localhost:6379/0") }
         end
