@@ -15,16 +15,17 @@ module GeneratorHelpers
         File.join(Dir.pwd, *parts)
     end
 
-    def safe_insert_into_file(file, needle, content)
+    def safe_insert_into_file(file, needle:, content:, position: :after)
         file = root_path(file)
-        unless File.read(file).include?(needle)
-            insert_into_file file, after: needle do
+        file_content = File.read(file)
+
+        if file_content.include?(content.strip)
+            say_status "skip", "Already patched #{file}", :blue
+        else
+            insert_into_file file, position => needle do
             content
             end
-        else
-            say_status "skip", "Already patched #{file}", :blue
         end
     end
-
-
+    
 end

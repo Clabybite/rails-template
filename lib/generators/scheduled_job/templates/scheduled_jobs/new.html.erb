@@ -1,0 +1,13 @@
+<%= render partial:"shared/new", locals: {
+        fields: [
+            :name,
+            [:job_class,@job_classes],
+            :cron,
+            :queue
+        ].compact ,
+        heading: "Scheduled Job",
+        model: @scheduled_job,
+        path: [:admin, @scheduled_job,],
+    } 
+        
+%>

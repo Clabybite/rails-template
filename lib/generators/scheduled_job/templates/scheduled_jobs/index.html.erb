@@ -1,0 +1,21 @@
+<%= render partial:"shared/index", locals: {
+        heading: "Scheduled Jobs",
+        new_link: new_admin_scheduled_job_path,
+        column_names: ["ID","Name","Job Class","Cron","Queue","Active"],
+        rows: @scheduled_jobs.map do |p|
+            {
+                data: [
+                    p.id,
+                    link_to(p.name,admin_scheduled_job_path(p)),
+                    p.job_class,
+                    p.cron,
+                    p.queue,
+                    p.active,
+                ],
+                show_link: admin_scheduled_job_path(p),
+                edit_link: edit_admin_scheduled_job_path(p)
+            }
+
+        end
+    }.compact
+%>

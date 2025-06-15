@@ -1,0 +1,15 @@
+<%= render partial:"shared/edit", locals: {
+        fields: [
+            :name,
+            :job_class,
+            :cron,
+            :queue,
+            {field: :active, type: "boolean_select"},
+        ].compact ,
+        heading: "Task ",
+        name: @scheduled_job.name,
+        model: @scheduled_job,
+        path: admin_scheduled_job_path(@scheduled_job)
+    } 
+        
+%>
