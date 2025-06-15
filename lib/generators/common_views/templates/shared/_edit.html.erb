@@ -1,0 +1,8 @@
+<h1>Update <%= heading %> <strong><%= name %></strong></h1>
+
+<%= form_with model: model, url: path, local: true, data: {turbo: false} do |f| %>
+    <%= render partial: "shared/entry_fields", locals: {fields: fields, f: f,model: model} %>
+  <div class="actions">
+    <%= f.submit "Update #{heading}" %>
+  </div>
+<% end %>
