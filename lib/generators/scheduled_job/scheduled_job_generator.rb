@@ -25,7 +25,10 @@ class ScheduledJobGenerator < Rails::Generators::Base
         "config/routes.rb",
         needle: /^end/,
         content: <<~RUBY,
-            mount Sidekiq::Web => "/sidekiq" if Rails.env.development?
+           if defined?(Sidekiq::Web) || Rails.env.development?
+                require "sidekiq/web"
+                mount Sidekiq::Web => "/sidekiq"
+            end
         RUBY
         position: :before
     )
