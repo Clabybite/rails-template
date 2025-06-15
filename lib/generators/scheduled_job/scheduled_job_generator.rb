@@ -12,6 +12,9 @@ class ScheduledJobGenerator < Rails::Generators::Base
     template "scheduled_job.rb", "app/models/scheduled_job.rb"
   end
 
+  def create_base_controller
+    template "base_controller.rb", "app/controllers/admin/base_controller.rb"
+  end
   def create_controller
     template "scheduled_jobs_controller.rb", "app/controllers/admin/scheduled_jobs_controller.rb"
   end
