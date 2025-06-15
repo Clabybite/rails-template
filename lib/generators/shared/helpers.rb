@@ -27,5 +27,37 @@ module GeneratorHelpers
             end
         end
     end
-    
+
+    def safe_namespace_route(resource, namespace: :admin)
+        path = root_path("config/routes.rb")
+        content = File.read(path)
+
+        namespace_block = /^ *namespace :#{namespace} do *$/
+        resource_line   = "    resources :#{resource}"
+
+        if content.include?(resource_line.strip)
+            say_status :skip, "Already has resources :#{resource} under :#{namespace}", :blue
+            return
+        end
+
+        if content.match?(namespace_block)
+            # Add inside existing namespace block
+            insert_into_file path, after: namespace_block do
+            "\n#{resource_line}"
+            end
+        else
+            # Create namespace block near end
+            insert_into_file path, before: /^end/ do
+            <<~RUBY
+
+                namespace :#{namespace} do
+                resources :#{resource}
+                end
+
+            RUBY
+            end
+        end
+    end
+
+
 end

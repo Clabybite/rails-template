@@ -33,6 +33,7 @@ class ScheduledJobGenerator < Rails::Generators::Base
         RUBY
         position: :before
     )
+    safe_namespace_route("scheduled_jobs", namespace: :admin)
   end
 
   private
