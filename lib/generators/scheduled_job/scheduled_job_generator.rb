@@ -1,5 +1,6 @@
 require "rails/generators"
 require_relative "../shared/helpers"
+require_relative "../shared/sidekiq_support"
 class ScheduledJobGenerator < Rails::Generators::Base
     include GeneratorHelpers 
     include Shared::SidekiqSupport
