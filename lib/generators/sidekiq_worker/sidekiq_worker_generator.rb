@@ -7,9 +7,9 @@ module SidekiqWorker
     desc "Generates a Sidekiq worker and its test"
 
     def create_worker_file
+      template "worker.rb.tt", File.join("app/workers", class_path, "#{file_name}.rb")
       if behavior == :invoke
         setup_sidekiq
-        template "worker.rb.tt", File.join("app/workers", class_path, "#{file_name}.rb")
       elsif behavior == :revoke
         remove_sidekiq_setup_if_last_worker
       end
