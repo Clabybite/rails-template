@@ -27,12 +27,18 @@ module SidekiqWorker
 
       create_file "config/initializers/sidekiq.rb", <<~RUBY unless File.exist?("config/initializers/sidekiq.rb")
         require "sidekiq"
-        Sidekiq.configure_server do |config|
-          config.redis = { url: ENV.fetch("REDIS_URL", "redis://localhost:6379/0") }
+        app_namespace =
+          if Rails.application.class.respond_to?(:module_parent_name)
+            Rails.application.class.module_parent_name.underscore + "_sidekiq"
+          else
+            Rails.application.class.module_parent.name.underscore + "_sidekiq"
+          end
+       Sidekiq.configure_server do |config|
+          config.redis = { url: ENV.fetch("REDIS_URL", "redis://localhost:6379/0"), namespace: app_namespace }
         end
 
         Sidekiq.configure_client do |config|
-          config.redis = { url: ENV.fetch("REDIS_URL", "redis://localhost:6379/0") }
+          config.redis = { url: ENV.fetch("REDIS_URL", "redis://localhost:6379/0"), namespace: app_namespace }
         end
       RUBY
 
