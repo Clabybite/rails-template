@@ -2,6 +2,7 @@ require "rails/generators"
 require_relative "../shared/helpers"
 class ScheduledJobGenerator < Rails::Generators::Base
     include GeneratorHelpers 
+    include Shared::SidekiqSupport
   source_root File.expand_path("templates", __dir__)
 
   def generate_model_and_migration
@@ -24,19 +25,11 @@ class ScheduledJobGenerator < Rails::Generators::Base
   end
 
   def patch_routes
-    safe_insert_into_file(
-        "config/routes.rb",
-        needle: /^end/,
-        content: <<~RUBY,
-           require 'sidekiq/web'
-            require 'sidekiq/cron/web'
-            authenticate :user, lambda { |u| u.as_admin? } do
-                mount Sidekiq::Web => '/sidekiq'
-            end
-        RUBY
-        position: :before
-    )
     safe_namespace_route("scheduled_jobs", namespace: :admin)
+  end
+
+  def setup_sidekiq_if_needed
+    maybe_setup_sidekiq
   end
 
   private
