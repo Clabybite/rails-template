@@ -1,5 +1,6 @@
 # lib/generators/sidekiq_worker/sidekiq_worker_generator.rb
 require_relative "../shared/helpers"
+require_relative "../shared/sidekiq_support"
 module SidekiqWorker
   class SidekiqWorkerGenerator < Rails::Generators::NamedBase
     include GeneratorHelpers
