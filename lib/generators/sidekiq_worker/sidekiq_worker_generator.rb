@@ -7,8 +7,12 @@ module SidekiqWorker
     desc "Generates a Sidekiq worker and its test"
 
     def create_worker_file
-      setup_sidekiq
-      template "worker.rb.tt", File.join("app/workers", class_path, "#{file_name}.rb")
+      if behavior == :invoke
+        setup_sidekiq
+        template "worker.rb.tt", File.join("app/workers", class_path, "#{file_name}.rb")
+      elsif behavior == :revoke
+        remove_sidekiq_setup_if_last_worker
+      end
     end
 
     def create_test_file
@@ -16,6 +20,7 @@ module SidekiqWorker
     end
 
     def setup_sidekiq
+      return if behavior == :revoke  # Do nothing if destroying
       # Add sidekiq gems
       safe_add_gem("sidekiq")
       safe_add_gem("sidekiq-cron")
@@ -52,6 +57,19 @@ module SidekiqWorker
       say "- Run `bundle install`", :blue
       say "- Start Redis: `redis-server`", :blue
       say "- Start Sidekiq: `bundle exec sidekiq -C config/sidekiq.yml`", :blue
+    end
+
+    def remove_sidekiq_setup_if_last_worker
+      if behavior == :revoke
+        # Check for remaining workers
+        workers = Dir.glob("app/workers/*_worker.rb")
+        if workers.empty?
+          # Remove Sidekiq route
+          gsub_file "config/routes.rb", /.*mount Sidekiq::Web.*\n/, ""
+          # Optionally remove Sidekiq initializer or other setup
+          remove_file "config/initializers/sidekiq.rb" if File.exist?("config/initializers/sidekiq.rb")
+        end
+      end
     end
   end
 end
