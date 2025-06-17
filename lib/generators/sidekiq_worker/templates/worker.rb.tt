@@ -1,7 +1,9 @@
-class <%= class_name %>
-  include Sidekiq::Worker
+<% module_namespacing do -%>
+  class <%= adjusted_class_name %>
+    include Sidekiq::Worker
 
-  def perform(*args)
-    # Do something
+    def perform(*args)
+      # Do something
+    end
   end
-end
+<% end -%>

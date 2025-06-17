@@ -1,9 +1,11 @@
 require "test_helper"
 
-class <%= class_name %>Test < ActiveSupport::TestCase
-  test "perform does not raise" do
-    assert_nothing_raised do
-      <%= class_name %>.new.perform
+<% module_namespacing do -%>
+  class <%= adjusted_class_name %>Test < ActiveSupport::TestCase
+    test "perform runs without error" do
+      assert_nothing_raised do
+        <%= adjusted_class_name %>.new.perform
+      end
     end
   end
-end
+<% end -%>
