@@ -23,7 +23,10 @@ module GeneratorHelpers
         contents = content.is_a?(Array) ? content : [content]
 
         contents.each do |item|
-            next if file_content.include?(item.strip)
+            # Normalize both file content and item for comparison
+            normalized_file = file_content.gsub(/\s+/, "")
+            normalized_item = item.strip.gsub(/\s+/, "")
+            next if normalized_file.include?(normalized_item)
             insert_into_file file, position => needle do
             "#{item}\n"
             end
