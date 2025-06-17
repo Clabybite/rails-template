@@ -21,7 +21,7 @@ module Shared
 
     def setup_sidekiq
       return if behavior == :revoke  # Do nothing if destroying
-      safe_add_gem("redis")
+      add_redis_dependency
       safe_add_gem("sidekiq")
       safe_add_gem("sidekiq-cron")
 
@@ -73,5 +73,11 @@ module Shared
       gsub_file "config/routes.rb", /.*mount Sidekiq::Web.*\n/, ""
       remove_file "config/initializers/sidekiq.rb" if File.exist?("config/initializers/sidekiq.rb")
     end
+
+    def add_redis_dependency
+      safe_gem("redis", "~> 5.0")
+      Bundler.with_unbundled_env { run "bundle install" }
+    end
+    
   end
 end
