@@ -20,7 +20,8 @@ module Shared
     end
 
     def setup_sidekiq
-        return if behavior == :revoke  # Do nothing if destroying
+      return if behavior == :revoke  # Do nothing if destroying
+      safe_add_gem("redis")
       safe_add_gem("sidekiq")
       safe_add_gem("sidekiq-cron")
 
