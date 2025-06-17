@@ -61,14 +61,15 @@ module Shared
       safe_insert_into_file(
         "config/routes.rb",
         needle: /^end/,
-        content: <<~RUBY,
-          require "sidekiq/web"
-          require "sidekiq/cron/web"
-
-          authenticate :user, lambda { |u| u.as_admin? } do
-            mount Sidekiq::Web => "/sidekiq"
-          end
-        RUBY
+        content: [
+            'require "sidekiq/web"',
+            'require "sidekiq/cron/web"',
+            <<~RUBY
+            authenticate :user, lambda { |u| u.as_admin? } do
+                mount Sidekiq::Web => "/sidekiq"
+            end
+            RUBY
+        ],
         position: :before
       )
     end

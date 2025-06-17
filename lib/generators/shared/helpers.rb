@@ -19,12 +19,15 @@ module GeneratorHelpers
         file = root_path(file)
         file_content = File.read(file)
 
-        if file_content.include?(content.strip)
-            say_status "skip", "Already patched #{file}", :blue
-        else
+       # Support both a single string or an array of strings/blocks
+        contents = content.is_a?(Array) ? content : [content]
+
+        contents.each do |item|
+            next if file_content.include?(item.strip)
             insert_into_file file, position => needle do
-            content
+            "#{item}\n"
             end
+            say_status "insert", "Patched #{file} with: #{item.lines.first.strip}", :green
         end
     end
 
