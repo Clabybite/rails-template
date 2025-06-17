@@ -1,6 +1,11 @@
 # lib/generators/shared/sidekiq_support.rb
 module Shared
   module SidekiqSupport
+    def self.included(base)
+      base.class_eval do
+        source_root File.expand_path("templates", __dir__)
+      end
+    end
     def maybe_setup_sidekiq
         return if behavior == :revoke  # Do nothing if destroying
         if File.exist?("config/initializers/sidekiq.rb")
