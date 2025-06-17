@@ -29,22 +29,40 @@ module Shared
 
     def create_sidekiq_initializer
       create_file "config/initializers/sidekiq.rb", <<~RUBY
-        require "sidekiq"
+        # config/initializers/sidekiq.rb
+        require 'sidekiq'
+        require 'redis'
+        require 'zlib'
 
-        app_namespace =
-          if Rails.application.class.respond_to?(:module_parent_name)
-            Rails.application.class.module_parent_name.underscore + "_sidekiq"
-          else
-            Rails.application.class.module_parent.name.underscore + "_sidekiq"
-          end
+        APP_ID = "#{Rails.application.class.module_parent_name rescue 'default_app'}:#{Rails.env}"
+        REDIS_HOST = ENV.fetch("REDIS_HOST", "localhost")
+        REDIS_PORT = ENV.fetch("REDIS_PORT", "6379")
+        MAX_DB = 15
 
-        Sidekiq.configure_server do |config|
-          config.redis = { url: ENV.fetch("REDIS_URL", "redis://localhost:6379/0"), namespace: app_namespace }
+        def find_or_assign_redis_db
+            (0..MAX_DB).each do |db|
+                redis = Redis.new(host: REDIS_HOST, port: REDIS_PORT, db: db)
+                marker = redis.get("sidekiq_app_id")
+
+                return db if marker == APP_ID
+
+                if marker.nil?
+                    redis.set("sidekiq_app_id", APP_ID)
+                    Rails.logger.info "[Sidekiq] Assigned Redis DB ##{db} to #{APP_ID}"
+                    return db
+                end
+            end
+
+            raise "No free Redis DB available (0..#{MAX_DB} already taken)"
         end
 
-        Sidekiq.configure_client do |config|
-          config.redis = { url: ENV.fetch("REDIS_URL", "redis://localhost:6379/0"), namespace: app_namespace }
-        end
+        redis_db = ENV["REDIS_DB"] || find_or_assign_redis_db
+        redis_url = "redis://#{REDIS_HOST}:#{REDIS_PORT}/#{redis_db}"
+
+        Sidekiq.configure_server { |config| config.redis = { url: redis_url } }
+        Sidekiq.configure_client { |config| config.redis = { url: redis_url } }
+
+        Rails.logger.info "[Sidekiq] '#{APP_ID}' using Redis DB ##{redis_db}"
       RUBY
     end
 
