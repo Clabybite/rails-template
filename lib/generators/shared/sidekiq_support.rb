@@ -75,7 +75,7 @@ module Shared
     end
 
     def add_redis_dependency
-      safe_gem("redis", "~> 5.0")
+      safe_add_gem("redis", "~> 5.0")
       Bundler.with_unbundled_env { run "bundle install" }
     end
     
