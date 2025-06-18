@@ -1,4 +1,5 @@
 # lib/generators/sidekiq_worker/sidekiq_worker_generator.rb
+require 'rails/generators'
 require_relative "../shared/helpers"
 require_relative "../shared/sidekiq_support"
 class SidekiqWorkerGenerator < Rails::Generators::NamedBase
@@ -29,6 +30,4 @@ class SidekiqWorkerGenerator < Rails::Generators::NamedBase
         remove_sidekiq_setup_if_last_worker
       end
     end
-
-    
 end
