@@ -34,7 +34,19 @@ def find_or_assign_redis_db
   raise "No free Redis DB available (0..\#{MAX_DB} already taken)"
 end
 
-redis_db = ENV["REDIS_DB"] || find_or_assign_redis_db
+# Persist to .redis_db so app doesn't reassign if Redis is flushed
+redis_db_file = Rails.root.join(".redis_db")
+redis_db =
+  if ENV["REDIS_DB"]
+    ENV["REDIS_DB"]
+  elsif File.exist?(redis_db_file)
+    File.read(redis_db_file).strip
+  else
+    assigned = find_or_assign_redis_db
+    File.write(redis_db_file, assigned)
+    assigned
+  end
+
 redis_url = "redis://#{REDIS_HOST}:#{REDIS_PORT}/#{redis_db}"
 # Now use redis_url
 

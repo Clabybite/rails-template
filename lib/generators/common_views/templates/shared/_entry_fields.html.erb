@@ -1,0 +1,94 @@
+<% if model.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(model.errors.count, "error") %> prohibited this model from being saved:</h2>
+    <ul>
+      <% model.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<% fields.each do |field| %>
+  <div class="form-group row field">
+    <% if field.is_a?(Array) %>
+      <% # Handles simple select fields with a label and options %>
+      <% label_text = f.object.class.human_attribute_name(field[0]) %>
+      <%= f.label field[0], label_text, class: "col-form-label" %>
+      <%= f.select field[0], field[1], {}, class: "form-control", aria: { label: label_text } %>
+    <% elsif field.is_a?(Hash) %>
+      <% # Handles more complex field types defined by a hash %>
+      <% field_name = field[:field] %>
+      <% label_text = field[:label] || f.object.class.human_attribute_name(field_name).titleize %>
+      <% options = field[:options] || {} %>
+      <% select_options = field[:select_options] || {} %>
+      <% field_options = field[:field_options] || {} %>
+      <%
+        label_style = ""
+        if field[:hidden]
+          options = options.merge(style: "display:none")
+          label_style = "display:none"
+        end
+      %>
+
+      <% case field[:type] %>
+      <% when "date" %>
+        <%= f.label field_name, label_text, class: "col-form-label", style: label_style %>
+        <%= f.date_field field_name, { size: 8, class: "form-control col-sm-2" }.merge(options) %>
+      <% when "hidden" %>
+        <%= f.hidden_field field_name, value: field[:value] %>
+      <% when "datetime" %>
+        <%= f.label field_name, label_text, class: "col-form-label", style: label_style %>
+        <%= f.datetime_field field_name, { class: "form-control col-sm-2", size: 8 }.merge(options) %>
+      <% when "number" %>
+        <%= f.label field_name, label_text, class: "col-form-label", style: label_style %>
+        <%= f.number_field field_name, { class: "form-control col-6 col-sm-1", size: 8 }.merge(options) %>
+      <% when "prices" %>
+        <%= render partial: "price_entry", locals: { f: f, model: field_name } %>
+      <% when "select" %>
+        <%= f.label field_name, label_text, class: "col-form-label", style: label_style %>
+        <%= f.select field_name, select_options, {}, { class: "form-control", aria: { label: label_text } }.merge(field_options) %>
+      <% when "file" %>
+        <%= f.label field_name, label_text, class: "col-form-label", style: label_style %>
+        <%= f.file_field field_name, class: "form-control col-sm-2" %>
+      <% when "text" %>
+        <%= f.label field_name, label_text, class: "col-form-label", style: label_style %>
+        <%= f.text_area field_name, { class: "form-control col-sm-2", rows: 3 }.merge(options) %>
+      <% when "checkbox" %>
+        <div class="form-check col-form-label">
+          <%= f.check_box field_name, class: "form-check-input" %>
+          <%= f.label field_name, label_text, class: "form-check-label", style: label_style %>
+        </div>
+      <% when "boolean_select" %>
+        <%= f.label field_name, label_text, class: "col-form-label", style: label_style %>
+        <%= f.select field_name, [["True", true], ["False", false]], {}, { class: "form-control" }.merge(options) %>
+      <% when "stock_transaction" %>
+        <table>
+          <thead>
+            <th>Item</th>
+            <th>Quantity</th>
+          </thead>
+          <tbody>
+            <%= f.fields_for field_name do |nf| %>
+              <tr>
+                <td>
+                  <%= nf.object.stock_item.name %>
+                  <%= nf.hidden_field :stock_item_id, value: nf.object.stock_item.id %>
+                </td>
+                <td><%= nf.number_field :quantity, size: 4, maxlength: 4 %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <% # Default text field for unhandled hash types or when no type is specified %>
+        <%= f.label field_name, label_text, class: "col-form-label", style: label_style %>
+        <%= f.text_field field_name, { class: ["form-control", field[:class]].compact.join(" ") }.merge(options) %>
+      <% end %>
+    <% else %>
+      <% # Handles simple text fields (e.g., if 'field' is just a symbol) %>
+      <%= f.label field, class: "col-form-label" %>
+      <%= f.text_field field, class: "form-control" %>
+    <% end %>
+  </div>
+<% end %>
