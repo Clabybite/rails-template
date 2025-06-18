@@ -1,8 +1,7 @@
 # lib/generators/sidekiq_worker/sidekiq_worker_generator.rb
 require_relative "../shared/helpers"
 require_relative "../shared/sidekiq_support"
-module SidekiqWorker
-  class SidekiqWorkerGenerator < Rails::Generators::NamedBase
+class SidekiqWorkerGenerator < Rails::Generators::NamedBase
     include GeneratorHelpers
     include Shared::SidekiqSupport
     source_root File.expand_path("templates", __dir__)
@@ -32,5 +31,4 @@ module SidekiqWorker
     end
 
     
-  end
 end
