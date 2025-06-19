@@ -22,8 +22,8 @@ module Shared
     def setup_sidekiq
       return if behavior == :revoke  # Do nothing if destroying
       add_redis_dependency
-      safe_add_gem("sidekiq")
-      safe_add_gem("sidekiq-cron")
+      safe_add_gem('sidekiq')
+      safe_add_gem('sidekiq-cron')
 
       create_sidekiq_initializer
       create_sidekiq_config
@@ -54,11 +54,11 @@ module Shared
         "config/routes.rb",
         needle: /^end/,
         content: [
-            'require "sidekiq/web"',
-            'require "sidekiq/cron/web"',
+            "require 'sidekiq/web'",
+            "require 'sidekiq/cron/web'",
             <<~RUBY
             authenticate :user, lambda { |u| u.as_admin? } do
-                mount Sidekiq::Web => "/sidekiq"
+                mount Sidekiq::Web => '/sidekiq'
             end
             RUBY
         ],
