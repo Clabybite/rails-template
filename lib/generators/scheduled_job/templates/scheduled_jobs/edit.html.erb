@@ -1,7 +1,7 @@
 <%= render partial:"shared/edit", locals: {
         fields: [
             :name,
-            :job_class,
+            [:job_class,@job_classes],
             :cron,
             :queue,
             {field: :active, type: "boolean_select"},
