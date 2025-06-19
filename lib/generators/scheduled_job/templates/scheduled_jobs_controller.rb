@@ -39,6 +39,7 @@ class Admin::ScheduledJobsController < Admin::BaseController
   
     def set_model
       @scheduled_job = ScheduledJob.find(params[:id])
+      @job_classes = available_job_classes
     end
   
     def model_params
