@@ -63,8 +63,8 @@ module GeneratorHelpers
         contents = content.is_a?(Array) ? content : [content]
 
         contents.each do |item|
-            # Normalize quotes in the item (preserve meaningful whitespace)
-            normalized_item = item.gsub(/['"]/, '"').strip
+            # Normalize quotes and whitespace in the item
+            normalized_item = item.gsub(/['"]/, '"').gsub(/\s+/, " ").strip
             next if normalized_file.include?(normalized_item)
 
             insert_into_file file, position => needle do
