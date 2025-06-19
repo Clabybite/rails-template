@@ -5,17 +5,26 @@ module GeneratorHelpers
         gemfile_content = File.exist?(path) ? File.read(path) : ""
 
         # Normalize quotes in the Gemfile content
-        normalized_content = gemfile_content.gsub(/['"]/, "'") # Normalize double quotes to single quotes
+        normalized_content = gemfile_content.gsub(/['"]/, '"')
 
-        # Build the gem line to check and add
+        # Build the gem line to add
         line = %{gem "#{name}"}
         line += %{, "#{version}"} if version
 
-        # Check if the gem is already present (ignoring version constraints)
-        unless normalized_content.include?(%{gem "#{name}"})
-            append_to_file path, "\n#{line}\n"
-            say_status "info", "Added '#{line}' to Gemfile. Please run `bundle install`.", :yellow
+        # Check if the gem already exists (with or without a version)
+        existing_gem_match = normalized_content.match(/gem "#{name}"(?:, ["']([^"']+)["'])?/)
+
+        if existing_gem_match
+            existing_version = existing_gem_match[1] # Captures the version if present
+            if version.nil? || existing_version == version
+                say_status "skip", "Gem '#{name}' already exists in Gemfile#{existing_version ? " with version '#{existing_version}'" : ""}.", :blue
+                return
+            end
         end
+
+        # Append the gem if not found or version differs
+        append_to_file path, "\n#{line}\n"
+        say_status "info", "Added '#{line}' to Gemfile. Please run `bundle install`.", :yellow
     end
     def root_path(*parts)
         return File.join(destination_root, *parts) if respond_to?(:destination_root)
