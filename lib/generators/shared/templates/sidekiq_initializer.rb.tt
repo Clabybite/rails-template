@@ -53,4 +53,4 @@ redis_url = "redis://#{REDIS_HOST}:#{REDIS_PORT}/#{redis_db}"
 Sidekiq.configure_server { |config| config.redis = { url: redis_url } }
 Sidekiq.configure_client { |config| config.redis = { url: redis_url } }
 
-Rails.logger.info "[Sidekiq] '\#{APP_ID}' using Redis DB ##\#{redis_db}"
+Rails.logger.info "[Sidekiq] #{APP_ID}' using Redis DB #{redis_db}"
