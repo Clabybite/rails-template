@@ -50,6 +50,30 @@ module GeneratorHelpers
         end
     end
 
+    def safe_add_route(file = "config/routes.rb", needle:, content:, position: :after)
+        file = root_path(file)
+        raise "File not found: #{file}" unless File.exist?(file)
+
+        file_content = File.read(file)
+
+        # Normalize quotes in the file content
+        normalized_file = file_content.gsub(/['"]/, '"')
+
+        # Support both a single string or an array of strings/blocks
+        contents = content.is_a?(Array) ? content : [content]
+
+        contents.each do |item|
+            # Normalize quotes in the item (preserve meaningful whitespace)
+            normalized_item = item.gsub(/['"]/, '"').strip
+            next if normalized_file.include?(normalized_item)
+
+            insert_into_file file, position => needle do
+                "#{item}\n"
+            end
+            say_status "insert", "Patched #{file} with: #{item.lines.first.strip}", :green
+        end
+    end
+
     def safe_namespace_route(resource, namespace: :admin)
         path = root_path("config/routes.rb")
         content = File.read(path)

@@ -50,8 +50,7 @@ module Shared
     end
 
     def add_sidekiq_admin_routes
-      safe_insert_into_file(
-        "config/routes.rb",
+      safe_add_route(
         needle: /^end/,
         content: [
             "require 'sidekiq/web'",
