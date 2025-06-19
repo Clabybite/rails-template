@@ -2,10 +2,17 @@
 module GeneratorHelpers
     def safe_add_gem(name, version = nil)
         path = root_path("Gemfile")
+        gemfile_content = File.exist?(path) ? File.read(path) : ""
+
+        # Normalize quotes in the Gemfile content
+        normalized_content = gemfile_content.gsub(/['"]/, "'") # Normalize double quotes to single quotes
+
+        # Build the gem line to check and add
         line = %{gem "#{name}"}
         line += %{, "#{version}"} if version
 
-        if File.exist?(path) && !File.read(path).include?(line)
+        # Check if the gem is already present (ignoring version constraints)
+        unless normalized_content.include?(%{gem "#{name}"})
             append_to_file path, "\n#{line}\n"
             say_status "info", "Added '#{line}' to Gemfile. Please run `bundle install`.", :yellow
         end

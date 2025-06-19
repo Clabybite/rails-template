@@ -7,7 +7,8 @@ def source_paths
 end
 def safe_gem(name, *args)
   gemfile = File.read("Gemfile") rescue ""
-  gem(name, *args) unless gemfile.include?(name)
+  normalized_gemfile = gemfile.gsub(/['"]/, "'") # Normalize double quotes to single quotes
+  gem(name, *args) unless normalized_gemfile.include?("gem \"#{name}\"")
 end
 def prompt_or_default(message, default, echo: true)
   return default if ENV["CI"] == "true"
