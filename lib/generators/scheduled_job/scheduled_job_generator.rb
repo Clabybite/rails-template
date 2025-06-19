@@ -25,6 +25,10 @@ class ScheduledJobGenerator < Rails::Generators::Base
     directory "scheduled_jobs", "app/views/admin/scheduled_jobs"
   end
 
+  def create_initializer
+    template "initializer.rb", "config/initializers/scheduled_jobs.rb"
+  end
+
   def patch_routes
     safe_namespace_route("scheduled_jobs", namespace: :admin)
   end
