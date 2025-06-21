@@ -3,11 +3,12 @@ require 'sidekiq'
 env = Rails.env
 socket_path = Rails.root.join("redis", env, "redis.sock")
 
-Sidekiq.configure_server do |config|
-  config.redis = { path: Rails.root.join("#{socket_path}") }
+redis_config = if File.exist?(socket_path)
+  { path: socket_path }
+else
+  warn "[Sidekiq] Redis socket not found. Falling back to localhost." if Rails.env.development?
+  { url: "redis://localhost:6379/0" }
 end
 
-Sidekiq.configure_client do |config|
-  config.redis = { path: Rails.root.join("#{socket_path}") }
-end
-Rails.logger.info "[Sidekiq] Using Redis socket at #{socket_path}" if defined?(Rails.logger)
+Sidekiq.configure_server { |config| config.redis = redis_config }
+Sidekiq.configure_client { |config| config.redis = redis_config }
