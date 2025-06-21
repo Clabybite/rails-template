@@ -35,14 +35,18 @@ module GeneratorHelpers
         file = root_path(file)
         file_content = File.read(file)
 
+        # Normalize quotes and remove all whitespace for comparison
+        normalized_file = file_content.gsub(/['"]/, '"').gsub(/\s+/, "").strip
+
+
        # Support both a single string or an array of strings/blocks
         contents = content.is_a?(Array) ? content : [content]
 
         contents.each do |item|
-            # Normalize both file content and item for comparison
-            normalized_file = file_content.gsub(/\s+/, "")
-            normalized_item = item.strip.gsub(/\s+/, "")
+            # Normalize quotes and whitespace in the item
+            normalized_item = item.gsub(/['"]/, '"').gsub(/\s+/, "").strip
             next if normalized_file.include?(normalized_item)
+
             insert_into_file file, position => needle do
             "#{item}\n"
             end
