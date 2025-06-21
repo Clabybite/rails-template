@@ -43,7 +43,7 @@ module GeneratorHelpers
         contents = content.is_a?(Array) ? content : [content]
 
         if needle == /\z/ && !file_content.end_with?("\n")
-            contents = contents.map { |item| item + "\n" }
+            contents = contents.map { |item| "\n" + item}
         end
 
         contents.each do |item|
