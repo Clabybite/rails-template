@@ -27,6 +27,7 @@ module Shared
 
       create_sidekiq_initializer
       create_sidekiq_config
+      setup_redis_instance
       add_sidekiq_admin_routes
 
       say ""
@@ -65,9 +66,20 @@ module Shared
       )
     end
 
+    def setup_redis_instance
+      empty_directory "redis/data"
+
+      template "start.sh", "redis/start.sh"
+
+      chmod "redis/start.sh", 0755
+    end
+
     def remove_sidekiq_setup_if_last_worker
       workers = Dir.glob("app/workers/*_worker.rb")
-      return unless workers.empty?
+      jobs = Dir.glob("app/jobs/*_job.rb")
+
+      return unless workers.empty? && jobs.empty? # Exit early unless both are empty
+
 
       gsub_file "config/routes.rb", /.*mount Sidekiq::Web.*\n/, ""
       remove_file "config/initializers/sidekiq.rb" if File.exist?("config/initializers/sidekiq.rb")
