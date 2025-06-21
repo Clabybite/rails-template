@@ -55,7 +55,7 @@ module GeneratorHelpers
     end
 
     def safe_add_gitignore(file = ".gitignore", content:,position: :after)
-        safe_insert_into_file(file, needle: /^$/, content: content, position: position)
+        safe_insert_into_file(file, needle: /\z/, content: content, position: position)
     end
 
     def safe_add_route(file = "config/routes.rb", needle:, content:, position: :after)
