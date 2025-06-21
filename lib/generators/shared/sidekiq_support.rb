@@ -69,9 +69,11 @@ module Shared
     def setup_redis_instance
       empty_directory "redis/data"
 
-      template "start.sh", "redis/start.sh"
+      template "start.sh", "redis_start.sh"
 
-      chmod "redis/start.sh", 0755
+      chmod "redis_start.sh", 0755
+
+      safe_add_gitignore(content: "/redis/*")
     end
 
     def remove_sidekiq_setup_if_last_worker

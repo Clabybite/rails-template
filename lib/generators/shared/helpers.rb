@@ -50,6 +50,10 @@ module GeneratorHelpers
         end
     end
 
+    def safe_add_gitignore(file = ".gitignore", content:,position: :after)
+        safe_insert_into_file(file, needle: /^$/, content: content, position: position)
+    end
+
     def safe_add_route(file = "config/routes.rb", needle:, content:, position: :after)
         file = root_path(file)
         raise "File not found: #{file}" unless File.exist?(file)
