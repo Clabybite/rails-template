@@ -42,6 +42,10 @@ module GeneratorHelpers
        # Support both a single string or an array of strings/blocks
         contents = content.is_a?(Array) ? content : [content]
 
+        if needle == /\z/ && !file_content.end_with?("\n")
+            contents = contents.map { |item| item + "\n" }
+        end
+
         contents.each do |item|
             # Normalize quotes and whitespace in the item
             normalized_item = item.gsub(/['"]/, '"').gsub(/\s+/, "").strip
