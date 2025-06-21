@@ -1,7 +1,8 @@
 #!/bin/bash
 
 ENV=${RAILS_ENV:-development}
-BASE_DIR="redis/$ENV"
+ROOT="$(pwd)"
+BASE_DIR="$ROOT/redis/$ENV"
 mkdir -p "$BASE_DIR/data"
 
 CONFIG_FILE="$BASE_DIR/redis.conf"
